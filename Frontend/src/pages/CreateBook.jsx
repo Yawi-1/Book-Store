@@ -4,17 +4,17 @@ import axios from "axios";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import { Link } from "react-router-dom";
-
+import { useSnackbar } from "notistack";
 const CreateBook = () => {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [publishYear, setPublishYear] = useState("");
   const navigate = useNavigate();
-
+  const {enqueueSnackbar} = useSnackbar();
   const handleSaveBook = () => {
     if(!title || !author || ! publishYear){
-      alert('Enter the required fields');
+      enqueueSnackbar('Enter the required fields !',{variant:'info'})
       return;
     }
     const data = {
@@ -24,9 +24,10 @@ const CreateBook = () => {
     };
     setLoading(true);
     axios
-      .post("http://localhost:5555/books", data)
-      .then(() => {
-        setLoading(false);
+    .post("http://localhost:5555/books", data)
+    .then(() => {
+      setLoading(false);
+      enqueueSnackbar('Book successfully created !',{variant:'success'})
         navigate("/"); // Redirect to home page after saving the book
       })
       .catch((err) => {
